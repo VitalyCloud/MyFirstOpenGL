@@ -35,17 +35,21 @@ bool initOpenGL();
 const GLchar* vertexShaderSrc =
 "#version 330 core\n"
 "layout (location = 0) in vec3 pos;" //0 - is index in glVertexAttribPointer
+"layout (location = 1) in vec3 color;"
+"out vec3 vert_color;"
 "void main()"
 "{"
+"   vert_color = color;"
 "   gl_Position = vec4(pos.x, pos.y, pos.z, 1.0);"
 "}";
 
 const GLchar* fragmentShaderSrc =
 "#version 330 core\n"
+"in vec3 vert_color;"
 "out vec4 frag_color;"
 "void main()"
 "{"
-"   frag_color = vec4(0.35f, 0.96f, 0.3f, 1.0f);"
+"   frag_color = vec4(vert_color, 1.0f);"
 "}"
 "";
 
@@ -63,10 +67,10 @@ int main() {
     
     //      TRIANGLE
     GLfloat vertices[] = {
-    //   x     y     z
-        0.0f, 0.5f, 0.0f, // top
-        0.5f, -0.5f, 0.0f, // right
-        -0.5, -0.5f, 0.0f, // left
+    //   x     y     z          //color
+        0.0f, 0.5f, 0.0f,       1.0f, 0.0f, 0.0f,   // top
+        0.5f, -0.5f, 0.0f,      0.0f, 1.0f, 0.0f,   // right
+        -0.5, -0.5f, 0.0f,      0.0f, 0.0f, 1.0f,   // left
     };
     
     //OpenGL object - generic place in gpu to hold data
@@ -85,9 +89,25 @@ int main() {
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
     
-    //???
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+    //Position attribute
+    glVertexAttribPointer(
+                          /*index*/0,
+                          /*size*/3,
+                          /*type*/GL_FLOAT,
+                          /*normalized*/GL_FALSE,
+                          /*stride*/sizeof(GLfloat) * 6,
+                          /*pointer(offset)*/NULL);
     glEnableVertexAttribArray(0);
+    
+    //Color attribute
+    glVertexAttribPointer(
+                          /*index*/1,
+                          /*size*/3,
+                          /*type*/GL_FLOAT,
+                          /*normalized*/GL_FALSE,
+                          /*stride*/sizeof(GLfloat) * 6,
+                          /*pointer(offset)*/(GLvoid*)(sizeof(GLfloat) * 3));
+    glEnableVertexAttribArray(1);
     
     //------ Sahders ---------
     GLuint vs = glCreateShader(GL_VERTEX_SHADER);
