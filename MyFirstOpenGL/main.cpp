@@ -66,15 +66,23 @@ int main() {
     //HINT: The reason because openg uses GLfloat typedef on float is because different os and machines may use their own size of float. The c float still work with GLfloat.
     
     //      TRIANGLE
-    GLfloat vertices[] = {
-    //   x     y     z          //color
-        0.0f, 0.5f, 0.0f,       1.0f, 0.0f, 0.0f,   // top
-        0.5f, -0.5f, 0.0f,      0.0f, 1.0f, 0.0f,   // right
-        -0.5, -0.5f, 0.0f,      0.0f, 0.0f, 1.0f,   // left
+    GLfloat vertices_position[] = {
+    //   x     y     z
+        0.0f, 0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        -0.5, -0.5f, 0.0f,
+    };
+    
+    GLfloat vertices_color[] = {
+             //color
+        1.0f, 0.0f, 0.0f,   // top
+        0.0f, 1.0f, 0.0f,   // right
+        0.0f, 0.0f, 1.0f,   // left
     };
     
     //OpenGL object - generic place in gpu to hold data
     //For minimize tranfer data from cpu to gpu
+    //Buffer fot positions
     GLuint vbo; //vertex buffer object id
     glGenBuffers(1, &vbo); // Init buffer
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -82,7 +90,13 @@ int main() {
     //GL_STATIC_DRAW - create once, set up once, use a lot
     //GL_DYNAMIC_DRAW - create once, changing a lot, use a lot
     //GL_STREAM_DRAW - create once, using ones
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_position), vertices_position, GL_STATIC_DRAW);
+    
+    //Buffer for color
+    GLuint vbo2;
+    glGenBuffers(1, &vbo2); // Init buffer
+    glBindBuffer(GL_ARRAY_BUFFER, vbo2);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_color), vertices_color, GL_STATIC_DRAW);
     
     //Vertex array object - hold information about buffer
     GLuint vao; //Vertex array object id
@@ -90,23 +104,25 @@ int main() {
     glBindVertexArray(vao);
     
     //Position attribute
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glVertexAttribPointer(
                           /*index*/0,
                           /*size*/3,
                           /*type*/GL_FLOAT,
                           /*normalized*/GL_FALSE,
-                          /*stride*/sizeof(GLfloat) * 6,
+                          /*stride*/0,
                           /*pointer(offset)*/NULL);
     glEnableVertexAttribArray(0);
     
     //Color attribute
+    glBindBuffer(GL_ARRAY_BUFFER, vbo2);
     glVertexAttribPointer(
                           /*index*/1,
                           /*size*/3,
                           /*type*/GL_FLOAT,
                           /*normalized*/GL_FALSE,
-                          /*stride*/sizeof(GLfloat) * 6,
-                          /*pointer(offset)*/(GLvoid*)(sizeof(GLfloat) * 3));
+                          /*stride*/0,
+                          /*pointer(offset)*/NULL);
     glEnableVertexAttribArray(1);
     
     //------ Sahders ---------
