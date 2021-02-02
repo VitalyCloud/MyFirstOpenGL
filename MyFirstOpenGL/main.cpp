@@ -8,6 +8,7 @@ const char* APP_TITLE = "Introduction to Modern OpenGL - Hello Triangle";
 const int gWindowWidth = 800;
 const int gWindowWHeight = 600;
 GLFWwindow* gWindow = NULL;
+bool gWireframe = false;
 
 void glfw_onKey(GLFWwindow *window, int key, int scancode, int action, int mode);
 void showFPS(GLFWwindow *window);
@@ -35,21 +36,17 @@ bool initOpenGL();
 const GLchar* vertexShaderSrc =
 "#version 330 core\n"
 "layout (location = 0) in vec3 pos;" //0 - is index in glVertexAttribPointer
-"layout (location = 1) in vec3 color;"
-"out vec3 vert_color;"
 "void main()"
 "{"
-"   vert_color = color;"
 "   gl_Position = vec4(pos.x, pos.y, pos.z, 1.0);"
 "}";
 
 const GLchar* fragmentShaderSrc =
 "#version 330 core\n"
-"in vec3 vert_color;"
 "out vec4 frag_color;"
 "void main()"
 "{"
-"   frag_color = vec4(vert_color, 1.0f);"
+"   frag_color = vec4(0.3f, 0.96f, 0.3f, 1.0f);"
 "}"
 "";
 
@@ -66,18 +63,16 @@ int main() {
     //HINT: The reason because openg uses GLfloat typedef on float is because different os and machines may use their own size of float. The c float still work with GLfloat.
     
     //      TRIANGLE
-    GLfloat vertices_position[] = {
+    GLfloat vertices[] = {
     //   x     y     z
-        0.0f, 0.5f, 0.0f,
+        //tri 0
+        -0.5f, 0.5f, 0.0f,
+        0.5f, 0.5f, 0.0f,
         0.5f, -0.5f, 0.0f,
-        -0.5, -0.5f, 0.0f,
-    };
-    
-    GLfloat vertices_color[] = {
-             //color
-        1.0f, 0.0f, 0.0f,   // top
-        0.0f, 1.0f, 0.0f,   // right
-        0.0f, 0.0f, 1.0f,   // left
+        //tri 1
+        -0.5, 0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        -0.5, -0.5f, 0.0f
     };
     
     //OpenGL object - generic place in gpu to hold data
@@ -90,13 +85,7 @@ int main() {
     //GL_STATIC_DRAW - create once, set up once, use a lot
     //GL_DYNAMIC_DRAW - create once, changing a lot, use a lot
     //GL_STREAM_DRAW - create once, using ones
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_position), vertices_position, GL_STATIC_DRAW);
-    
-    //Buffer for color
-    GLuint vbo2;
-    glGenBuffers(1, &vbo2); // Init buffer
-    glBindBuffer(GL_ARRAY_BUFFER, vbo2);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_color), vertices_color, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     
     //Vertex array object - hold information about buffer
     GLuint vao; //Vertex array object id
@@ -104,7 +93,6 @@ int main() {
     glBindVertexArray(vao);
     
     //Position attribute
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glVertexAttribPointer(
                           /*index*/0,
                           /*size*/3,
@@ -113,17 +101,6 @@ int main() {
                           /*stride*/0,
                           /*pointer(offset)*/NULL);
     glEnableVertexAttribArray(0);
-    
-    //Color attribute
-    glBindBuffer(GL_ARRAY_BUFFER, vbo2);
-    glVertexAttribPointer(
-                          /*index*/1,
-                          /*size*/3,
-                          /*type*/GL_FLOAT,
-                          /*normalized*/GL_FALSE,
-                          /*stride*/0,
-                          /*pointer(offset)*/NULL);
-    glEnableVertexAttribArray(1);
     
     //------ Sahders ---------
     GLuint vs = glCreateShader(GL_VERTEX_SHADER);
@@ -186,7 +163,7 @@ int main() {
         
         // -----------
         glBindVertexArray(vao); //bind
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
         
         
         glBindVertexArray(0);  //unbind
@@ -245,6 +222,15 @@ void glfw_onKey(GLFWwindow *window, int key, int scancode, int action, int mode)
     //Close app on esc key
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GL_TRUE);
+    }
+    
+    if (key == GLFW_KEY_W && action == GLFW_PRESS) {
+        gWireframe = !gWireframe;
+        if (gWireframe == true) {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        } else {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
     }
 }
 
