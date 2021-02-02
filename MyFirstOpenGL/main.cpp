@@ -65,19 +65,20 @@ int main() {
     //      TRIANGLE
     GLfloat vertices[] = {
     //   x     y     z
-        //tri 0
         -0.5f, 0.5f, 0.0f,
         0.5f, 0.5f, 0.0f,
         0.5f, -0.5f, 0.0f,
-        //tri 1
-        -0.5, 0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        -0.5, -0.5f, 0.0f
+        -0.5f, -0.5f, 0.0f
+    };
+    
+    GLuint indices[] = {
+      0, 1, 2, //tri 0
+      0, 2, 3  //tri 1
     };
     
     //OpenGL object - generic place in gpu to hold data
     //For minimize tranfer data from cpu to gpu
-    //Buffer fot positions
+    //Buffer for positions
     GLuint vbo; //vertex buffer object id
     glGenBuffers(1, &vbo); // Init buffer
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -101,6 +102,14 @@ int main() {
                           /*stride*/0,
                           /*pointer(offset)*/NULL);
     glEnableVertexAttribArray(0);
+    
+    
+    GLuint ibo; //index buffer
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    
+    
     
     //------ Sahders ---------
     GLuint vs = glCreateShader(GL_VERTEX_SHADER);
@@ -163,7 +172,8 @@ int main() {
         
         // -----------
         glBindVertexArray(vao); //bind
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+//        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         
         
         glBindVertexArray(0);  //unbind
