@@ -4,7 +4,9 @@
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
 
-const char* APP_TITLE = "Introduction to Modern OpenGL - Hello Triangle";
+#include "ShaderProgram.hpp"
+
+const char* APP_TITLE = "Introduction to Modern OpenGL - Hello Shader";
 const int gWindowWidth = 800;
 const int gWindowWHeight = 600;
 GLFWwindow* gWindow = NULL;
@@ -33,22 +35,9 @@ bool initOpenGL();
 // 6. Link the compiled shaders into a single Program
 // 7. Use the Program
 
-const GLchar* vertexShaderSrc =
-"#version 330 core\n"
-"layout (location = 0) in vec3 pos;" //0 - is index in glVertexAttribPointer
-"void main()"
-"{"
-"   gl_Position = vec4(pos.x, pos.y, pos.z, 1.0);"
-"}";
 
-const GLchar* fragmentShaderSrc =
-"#version 330 core\n"
-"out vec4 frag_color;"
-"void main()"
-"{"
-"   frag_color = vec4(0.3f, 0.96f, 0.3f, 1.0f);"
-"}"
-"";
+
+
 
 
 int main() {
@@ -112,48 +101,12 @@ int main() {
     
     
     //------ Sahders ---------
-    GLuint vs = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vs, 1, &vertexShaderSrc, NULL);
-    glCompileShader(vs);
     
-    //Result of compilation
-    GLint result;
-    GLchar infoLog[512];
-    glGetShaderiv(vs, GL_COMPILE_STATUS, &result);
-    if(!result) {
-        glGetShaderInfoLog(vs, sizeof(infoLog), NULL, infoLog);
-        std::cout << "Error! Vertex shader failed to compile. " << infoLog << std::endl;
-    }
+    ShaderProgram shaderProgram;
+    shaderProgram.loadShaders("/Users/vitalycloud/Desktop/MyFirstOpenGL/MyFirstOpenGL/bin/basic.vert",
+        "/Users/vitalycloud/Desktop/MyFirstOpenGL/MyFirstOpenGL/bin/basic.frag");
     
-    GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fs, 1, &fragmentShaderSrc, NULL);
-    glCompileShader(fs);
     
-    //Result of compilation
-    glGetShaderiv(fs, GL_COMPILE_STATUS, &result);
-    if(!result) {
-        glGetShaderInfoLog(fs, sizeof(infoLog), NULL, infoLog);
-        std::cout << "Error! Vertex shader failed to compile. " << infoLog << std::endl;
-    }
-    
-    //Create programm
-    GLuint shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vs);
-    glAttachShader(shaderProgram, fs);
-    glLinkProgram(shaderProgram);
-    
-    //Check link result
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &result);
-    if(!result) {
-        glGetProgramInfoLog(shaderProgram, sizeof(infoLog), NULL, infoLog);
-        std::cout << "Error! Shader Program linker failure " << infoLog << std::endl;
-    }
-    
-    //Delete from memory
-    glDeleteShader(vs);
-    glDeleteShader(fs);
-    
-    glUseProgram(shaderProgram);
     
     
     // ---------
@@ -170,6 +123,8 @@ int main() {
         //GL_STENCIL_BUFFER_BIT
         glClear(GL_COLOR_BUFFER_BIT);
         
+        shaderProgram.use();
+        
         // -----------
         glBindVertexArray(vao); //bind
 //        glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -184,7 +139,7 @@ int main() {
         
     }
     
-    glDeleteProgram(shaderProgram);
+
     glDeleteVertexArrays(1, &vao);
     glDeleteBuffers(1, &vbo);
     glDeleteBuffers(1, &ibo);
