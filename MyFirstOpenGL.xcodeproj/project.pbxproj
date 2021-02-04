@@ -12,6 +12,7 @@
 		80A8CB6E25C8600700D75CF0 /* libglfw.3.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 80A8CB6D25C8600700D75CF0 /* libglfw.3.3.dylib */; };
 		80A8CB7025C8603000D75CF0 /* libGLEW.2.2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 80A8CB6F25C8603000D75CF0 /* libGLEW.2.2.0.dylib */; };
 		80C1C8EE25CB388D009D1A3C /* ShaderProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 80C1C8EC25CB388D009D1A3C /* ShaderProgram.cpp */; };
+		80F7468525CC97160051BC49 /* Texture2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 80F7468325CC97160051BC49 /* Texture2D.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -37,6 +38,8 @@
 		80C1C8ED25CB388D009D1A3C /* ShaderProgram.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ShaderProgram.hpp; sourceTree = "<group>"; };
 		80C1C8F225CB441E009D1A3C /* basic.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = basic.vert; sourceTree = "<group>"; };
 		80C1C8F425CB444C009D1A3C /* basic.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = basic.frag; sourceTree = "<group>"; };
+		80F7468325CC97160051BC49 /* Texture2D.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Texture2D.cpp; sourceTree = "<group>"; };
+		80F7468425CC97160051BC49 /* Texture2D.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Texture2D.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +76,7 @@
 		80A8CB5D25C85F6500D75CF0 /* MyFirstOpenGL */ = {
 			isa = PBXGroup;
 			children = (
+				80F7468725CCA6140051BC49 /* textures */,
 				80C1C8F325CB442A009D1A3C /* bin */,
 				80C1C8F025CB38AA009D1A3C /* src */,
 				80A8CB7225C8610E00D75CF0 /* MyFirstOpenGL.entitlements */,
@@ -96,6 +100,8 @@
 				80A8CB5E25C85F6500D75CF0 /* main.cpp */,
 				80C1C8EC25CB388D009D1A3C /* ShaderProgram.cpp */,
 				80C1C8ED25CB388D009D1A3C /* ShaderProgram.hpp */,
+				80F7468325CC97160051BC49 /* Texture2D.cpp */,
+				80F7468425CC97160051BC49 /* Texture2D.hpp */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -107,6 +113,13 @@
 				80C1C8F425CB444C009D1A3C /* basic.frag */,
 			);
 			path = bin;
+			sourceTree = "<group>";
+		};
+		80F7468725CCA6140051BC49 /* textures */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = textures;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -166,6 +179,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				80A8CB5F25C85F6500D75CF0 /* main.cpp in Sources */,
+				80F7468525CC97160051BC49 /* Texture2D.cpp in Sources */,
 				80C1C8EE25CB388D009D1A3C /* ShaderProgram.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

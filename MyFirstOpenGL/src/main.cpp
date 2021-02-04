@@ -5,12 +5,15 @@
 #include "GLFW/glfw3.h"
 
 #include "ShaderProgram.hpp"
+#include "Texture2D.hpp"
 
 const char* APP_TITLE = "Introduction to Modern OpenGL - Hello Shader";
 const int gWindowWidth = 800;
 const int gWindowWHeight = 600;
 GLFWwindow* gWindow = NULL;
 bool gWireframe = false;
+const std::string texture1 = "/Users/vitalycloud/Desktop/MyFirstOpenGL/MyFirstOpenGL/textures/airplane.PNG";
+const std::string texture2 = "/Users/vitalycloud/Desktop/MyFirstOpenGL/MyFirstOpenGL/textures/crate.jpg";
 
 void glfw_onKey(GLFWwindow *window, int key, int scancode, int action, int mode);
 void showFPS(GLFWwindow *window);
@@ -53,11 +56,12 @@ int main() {
     
     //      TRIANGLE
     GLfloat vertices[] = {
+        //positions             //texture coordinates
     //   x     y     z
-        -0.5f, 0.5f, 0.0f,
-        0.5f, 0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f
+        -0.5f, 0.5f, 0.0f,      0.0f, 1.0f, //top left
+        0.5f, 0.5f, 0.0f,       1.0f, 1.0f, //top right
+        0.5f, -0.5f, 0.0f,      1.0f, 0.0f, //bottom riht
+        -0.5f, -0.5f, 0.0f,     0.0f, 0.0f  //bottom left
     };
     
     GLuint indices[] = {
@@ -88,9 +92,14 @@ int main() {
                           /*size*/3,
                           /*type*/GL_FLOAT,
                           /*normalized*/GL_FALSE,
-                          /*stride*/0,
+                          /*stride*/5 * sizeof(GLfloat),
                           /*pointer(offset)*/NULL);
     glEnableVertexAttribArray(0);
+    
+    //tex coord
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(1);
+    
     
     
     GLuint ibo; //index buffer
@@ -106,7 +115,12 @@ int main() {
     shaderProgram.loadShaders("/Users/vitalycloud/Desktop/MyFirstOpenGL/MyFirstOpenGL/bin/basic.vert",
         "/Users/vitalycloud/Desktop/MyFirstOpenGL/MyFirstOpenGL/bin/basic.frag");
     
+    // ---------
     
+    // ------ Texture ---------
+    
+    Texture2D texture;
+    texture.loadTexture(texture1, true);
     
     
     // ---------
@@ -123,16 +137,10 @@ int main() {
         //GL_STENCIL_BUFFER_BIT
         glClear(GL_COLOR_BUFFER_BIT);
         
+        texture.bind();
+        
         shaderProgram.use();
         
-        GLfloat time = glfwGetTime();
-        GLfloat blueColor = (sin(time) / 2) + 0.5f;
-        
-        glm::vec2 pos;
-        pos.x = sin(time) / 2;
-        pos.y = cos(time) / 2;
-        shaderProgram.setUniform("posOffset", pos);
-        shaderProgram.setUniform("vertColor", glm::vec4(0.0f, 0.0f, blueColor, 1.0f));
         // -----------
         glBindVertexArray(vao); //bind
 //        glDrawArrays(GL_TRIANGLES, 0, 6);
